@@ -24,6 +24,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     uint256 public publicSalePrice; 
 
     uint256 public maxPreSale;
+    uint256 public maxPreSaleOg;
     uint256 public maxPublicSale;
 
     string private _baseURIextended;
@@ -31,13 +32,15 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     string public NETWORK_PROVENANCE = "";
     string public notRevealedUri;
 
-    mapping(address => uint256) public nftMinted;
+    mapping(address => bool) public isWhiteListed;
+    mapping(address => bool) public isOgListed;
 
-    constructor(string memory name, string memory symbol, uint256 _preSalePrice, uint256 _publicSalePrice, uint256 _maxSupply, uint256 _maxPreSale, uint256 _maxPublicSale) ERC721A(name, symbol) ReentrancyGuard() {
+    constructor(string memory name, string memory symbol, uint256 _preSalePrice, uint256 _publicSalePrice, uint256 _maxSupply, uint256 _maxPreSale, uint256 _maxPreSaleOg, uint256 _maxPublicSale) ERC721A(name, symbol) ReentrancyGuard() {
         preSalePrice = _preSalePrice;
         publicSalePrice = _publicSalePrice;
         maxSupply = _maxSupply;
         maxPreSale = _maxPreSale;
+        maxPreSaleOg = _maxPreSaleOg;
         maxPublicSale = _maxPublicSale;
     }
 
@@ -47,13 +50,20 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     function preSaleMint(uint256 _amount) external payable nonReentrant{
         require(preSaleActive, "TLS Pre Sale is not Active");
-        require(nftMinted[msg.sender].add(_amount) <= maxPreSale, "TLS Maximum Pre Sale Minting Limit Reached");
+        require(isWhiteListed[msg.sender] || isOgListed[msg.sender], "TLS User is not White/OG Listed");
+        if(isOgListed[msg.sender])
+        {
+            require(balanceOf(msg.sender).add(_amount) <= maxPreSaleOg, "TLS Maximum Pre Sale OG Minting Limit Reached");
+        }
+        else{
+            require(balanceOf(msg.sender).add(_amount) <= maxPreSale, "TLS Maximum Pre Sale Minting Limit Reached");
+        }
         mint(_amount, true);
     }
 
     function publicSaleMint(uint256 _amount) external payable nonReentrant {
         require(publicSaleActive, "TLS Public Sale is not Active");
-        require(nftMinted[msg.sender].add(_amount) <= maxPublicSale, "TLS Maximum Minting Limit Reached");
+        require(balanceOf(msg.sender).add(_amount) <= maxPublicSale, "TLS Maximum Minting Limit Reached");
         mint(_amount, false);
     }
 
@@ -66,7 +76,6 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         else{
             require(publicSalePrice*amount <= msg.value, "TLS ETH Value Sent for Public Sale is not enough");
         }
-        nftMinted[msg.sender] = nftMinted[msg.sender].add(amount);
         _safeMint(msg.sender, amount);
     }
 
@@ -90,6 +99,18 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     function togglePublicSale() external onlyOwner {
         publicSaleActive = !publicSaleActive;
         preSaleActive = false;
+    }
+
+    function addWhiteListedAddresses(address[] memory _address) external onlyOwner {
+        for (uint256 i = 0; i < _address.length; i++) {
+            isWhiteListed[_address[i]] = true;
+        }
+    }
+
+    function addOgListedAddresses(address[] memory _address) external onlyOwner {
+        for (uint256 i = 0; i < _address.length; i++) {
+            isOgListed[_address[i]] = true;
+        }
     }
 
     function setPreSalePrice(uint256 _preSalePrice) external onlyOwner {
