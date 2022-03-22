@@ -12,6 +12,7 @@ contract("NFT deployment", () => {
 			"200000000000000000",
 			12,
       2,
+	  4,
       5
 		);
 		await nft.deployed();

@@ -123,8 +123,8 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     function airDrop(address[] memory _address) external onlyOwner {
         require(totalSupply().add(_address.length) <= maxSupply, "TLS Maximum Supply Reached");
-        for(uint i=1; i <= _address.length; i++){
-            _safeMint(_address[i-1], 1);
+        for(uint i=0; i < _address.length; i++){
+            _safeMint(_address[i], 1);
         }
     }
 
