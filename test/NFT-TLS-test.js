@@ -56,17 +56,23 @@ describe("NFT", function () {
 		).to.be.revertedWith("TLS Pre Sale is not Active");
 
 		await nft.togglePreSale();
-		await expect(
-			nft
-				.connect(accounts[1])
-				.preSaleMint(1, { value: ethers.utils.parseEther("0.15") })
-		).to.be.revertedWith("TLS Minting is Paused");
+		await expect(nft.connect(accounts[1])
+		.preSaleMint(1, { value: ethers.utils.parseEther("0.15") }))
+		.to.be.revertedWith("TLS User is not White/OG Listed");
 
+		await nft.addWhiteListedAddresses([accounts[1].address]);
+
+		await expect(nft.connect(accounts[1])
+		.preSaleMint(1, { value: ethers.utils.parseEther("0.15") }))
+		.to.be.revertedWith("TLS Minting is Paused");
+		
 		await nft.togglePauseState();
 
 		await nft
 			.connect(accounts[1])
 			.preSaleMint(1, { value: ethers.utils.parseEther("0.15") });
+
+		await nft.addOgListedAddresses([accounts[2].address]);
 
 		await expect(
 			nft
