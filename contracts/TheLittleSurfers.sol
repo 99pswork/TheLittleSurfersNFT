@@ -61,6 +61,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         mint(_amount, true);
     }
 
+    // Track public sale minting exclusively
     function publicSaleMint(uint256 _amount) external payable nonReentrant {
         require(publicSaleActive, "TLS Public Sale is not Active");
         require(balanceOf(msg.sender).add(_amount) <= maxPublicSale, "TLS Maximum Minting Limit Reached");
