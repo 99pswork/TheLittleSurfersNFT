@@ -34,6 +34,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     mapping(address => bool) public isWhiteListed;
     mapping(address => bool) public isOgListed;
+    mapping(address => uint256) public publicSaleCounter;
 
     constructor(string memory name, string memory symbol, uint256 _preSalePrice, uint256 _publicSalePrice, uint256 _maxSupply, uint256 _maxPreSale, uint256 _maxPreSaleOg, uint256 _maxPublicSale) ERC721A(name, symbol) ReentrancyGuard() {
         preSalePrice = _preSalePrice;
@@ -64,7 +65,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     // Track public sale minting exclusively
     function publicSaleMint(uint256 _amount) external payable nonReentrant {
         require(publicSaleActive, "TLS Public Sale is not Active");
-        require(balanceOf(msg.sender).add(_amount) <= maxPublicSale, "TLS Maximum Minting Limit Reached");
+        require(publicSaleCounter[msg.sender].add(_amount) <= maxPublicSale, "TLS Maximum Minting Limit Reached");
         mint(_amount, false);
     }
 
@@ -76,6 +77,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         }
         else{
             require(publicSalePrice*amount <= msg.value, "TLS ETH Value Sent for Public Sale is not enough");
+            publicSaleCounter[msg.sender] = publicSaleCounter[msg.sender].add(amount);
         }
         _safeMint(msg.sender, amount);
     }
@@ -133,6 +135,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         revealed = true;
     }
 
+    // Split into 60%, 30%, 10%
     function withdrawTotal() external onlyOwner {
         uint balance = address(this).balance;
         payable(msg.sender).transfer(balance);
