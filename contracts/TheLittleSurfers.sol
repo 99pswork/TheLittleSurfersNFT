@@ -149,16 +149,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     function setNotRevealedURI(string memory _notRevealedUri) external onlyOwner {
         notRevealedUri = _notRevealedUri;
     }
-
-    function raffleNumberGenerator(uint _limit) public view returns(uint256) {
-        uint256 seed = uint256(keccak256(abi.encodePacked(
-            block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / (block.timestamp)) +
-            block.gaslimit + ((uint256(keccak256(abi.encodePacked(msg.sender)))) / (block.timestamp)) + block.number
-        )));
-        return 1 + (seed - ((seed / _limit) * _limit));
-        
-    }
-
+    
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         require(_exists(_tokenId), "TLS URI For Token Non-existent");
         if(!revealed){
