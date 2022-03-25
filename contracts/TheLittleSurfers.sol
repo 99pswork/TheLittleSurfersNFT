@@ -34,6 +34,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     mapping(address => bool) public isWhiteListed;
     mapping(address => bool) public isOgListed;
+    mapping(address => uint256) public preSaleCounter;
     mapping(address => uint256) public publicSaleCounter;
 
     constructor(string memory name, string memory symbol, uint256 _preSalePrice, uint256 _publicSalePrice, uint256 _maxSupply, uint256 _maxPreSale, uint256 _maxPreSaleOg, uint256 _maxPublicSale) ERC721A(name, symbol) ReentrancyGuard() {
@@ -54,10 +55,10 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         require(isWhiteListed[msg.sender] || isOgListed[msg.sender], "TLS User is not White/OG Listed");
         if(isOgListed[msg.sender])
         {
-            require(balanceOf(msg.sender).add(_amount) <= maxPreSaleOg, "TLS Maximum Pre Sale OG Minting Limit Reached");
+            require(preSaleCounter[msg.sender].add(_amount) <= maxPreSaleOg, "TLS Maximum Pre Sale OG Minting Limit Reached");
         }
         else{
-            require(balanceOf(msg.sender).add(_amount) <= maxPreSale, "TLS Maximum Pre Sale Minting Limit Reached");
+            require(preSaleCounter[msg.sender].add(_amount) <= maxPreSale, "TLS Maximum Pre Sale Minting Limit Reached");
         }
         mint(_amount, true);
     }
@@ -74,6 +75,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         require(totalSupply().add(amount) <= maxSupply, "TLS Maximum Supply Reached");
         if(state){
             require(preSalePrice*amount <= msg.value, "TLS ETH Value Sent for Pre Sale is not enough");
+            preSaleCounter[msg.sender] = preSaleCounter[msg.sender].add(amount);
         }
         else{
             require(publicSalePrice*amount <= msg.value, "TLS ETH Value Sent for Public Sale is not enough");
