@@ -138,14 +138,15 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     function withdrawTotal() external onlyOwner {
         uint balance = address(this).balance;
-        payable(address(0x6F14C20D16c4e1511471AC9A657Aab48Ea981727)).transfer(balance.mul(25).div(1000));
-        payable(address(0xebD47AaebdeEBE67DFB2092DB728e86cC62fFac6)).transfer(balance.mul(30).div(100));
+        payable(address(0x6F14C20D16c4e1511471AC9A657Aab48Ea981727)).transfer(balance.mul(125).div(10000));
+        payable(address(0xebD47AaebdeEBE67DFB2092DB728e86cC62fFac6)).transfer(balance.mul(125).div(10000));
+        payable(address(0x345A8760D24CAd15E00387FCA6Da6Cbb85334482)).transfer(balance.mul(30).div(100));
         payable(address(0xB6cD3e633b4D1072557c236767c38C26e09039b7)).transfer(balance.mul(10).div(100));
         payable(address(0x8102c63993151973c0F334CE3bFB3B48B611e1C1)).transfer(balance.mul(15).div(100));
         payable(address(0x70148a9f077D4836d9a790ce1c1b637FAB2A9d8f)).transfer(balance.mul(15).div(100));
-        
+
         balance = address(this).balance;
-        payable(address(0x7750681f5a8EB64b3581A4D71B0b134b95D5401c)).transfer(balance);
+        payable(address(0x7750681f5a8EB64b3581A4D71B0b134b95D5401c)).transfer(balance);  // 27.5, rest of balance
     }
 
     function setProvenanceHash(string memory provenanceHash) external onlyOwner {
