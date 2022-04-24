@@ -19,13 +19,13 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     bool public paused = true;
     bool public revealed = false;
 
-    uint256 public maxSupply; 
-    uint256 public preSalePrice; 
-    uint256 public publicSalePrice; 
+    uint256 public maxSupply = 5555; 
+    uint256 public preSalePrice = 0.08 ether; 
+    uint256 public publicSalePrice = 0.1 ether; 
 
-    uint256 public maxPreSale;
-    uint256 public maxPreSaleOg;
-    uint256 public maxPublicSale;
+    uint256 public maxPreSale = 3;
+    uint256 public maxPreSaleOg = 4;
+    uint256 public maxPublicSale = 3;
 
     string private _baseURIextended;
     
@@ -37,13 +37,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     mapping(address => uint256) public preSaleCounter;
     mapping(address => uint256) public publicSaleCounter;
 
-    constructor(string memory name, string memory symbol, uint256 _preSalePrice, uint256 _publicSalePrice, uint256 _maxSupply, uint256 _maxPreSale, uint256 _maxPreSaleOg, uint256 _maxPublicSale) ERC721A(name, symbol) ReentrancyGuard() {
-        preSalePrice = _preSalePrice;
-        publicSalePrice = _publicSalePrice;
-        maxSupply = _maxSupply;
-        maxPreSale = _maxPreSale;
-        maxPreSaleOg = _maxPreSaleOg;
-        maxPublicSale = _maxPublicSale;
+    constructor(string memory name, string memory symbol) ERC721A(name, symbol) ReentrancyGuard() {
     }
 
     function _startTokenId() internal view virtual override returns (uint256) {
