@@ -21,6 +21,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     uint256 public maxSupply = 5555; 
     uint256 public preSalePrice = 0.08 ether; 
+    uint256 public preSaleOgPrice = 0.05 ether;
     uint256 public publicSalePrice = 0.1 ether; 
 
     uint256 public maxPreSale = 3;
@@ -50,9 +51,11 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         if(isOgListed[msg.sender])
         {
             require(preSaleCounter[msg.sender].add(_amount) <= maxPreSaleOg, "TLS Maximum Pre Sale OG Minting Limit Reached");
+            require(preSaleOgPrice*_amount <= msg.value, "TLS ETH Value Sent for Pre Sale Og is not enough");
         }
         else{
             require(preSaleCounter[msg.sender].add(_amount) <= maxPreSale, "TLS Maximum Pre Sale Minting Limit Reached");
+            require(preSalePrice*_amount <= msg.value, "TLS ETH Value Sent for Pre Sale is not enough");
         }
         mint(_amount, true);
     }
@@ -67,7 +70,6 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
         require(!paused, "TLS Minting is Paused");
         require(totalSupply().add(amount) <= maxSupply, "TLS Maximum Supply Reached");
         if(state){
-            require(preSalePrice*amount <= msg.value, "TLS ETH Value Sent for Pre Sale is not enough");
             preSaleCounter[msg.sender] = preSaleCounter[msg.sender].add(amount);
         }
         else{
