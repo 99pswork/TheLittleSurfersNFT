@@ -31,7 +31,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     string private _baseURIextended;
     
     string public NETWORK_PROVENANCE = "";
-    string public notRevealedUri;
+    string public notRevealedUri = "ipfs://QmdSHzmB6EEBkuBzc84Gg5QaewjwZX1KkiTykN2HJBU6ZB";
 
     mapping(address => bool) public isWhiteListed;
     mapping(address => bool) public isOgListed;
