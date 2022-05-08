@@ -19,17 +19,17 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     bool public paused = true;
     bool public revealed = false;
 
-    uint256 public maxSupply = 5555; 
-    uint256 public preSalePrice = 0.08 ether; 
+    uint256 public maxSupply = 5555;
+    uint256 public preSalePrice = 0.08 ether;
     uint256 public preSaleOgPrice = 0.05 ether;
-    uint256 public publicSalePrice = 0.1 ether; 
+    uint256 public publicSalePrice = 0.1 ether;
 
-    uint256 public maxPreSale = 3;
-    uint256 public maxPreSaleOg = 4;
-    uint256 public maxPublicSale = 3;
+    uint256 public maxPreSale = 7;
+    uint256 public maxPreSaleOg = 8;
+    uint256 public maxPublicSale = 5;
 
     string private _baseURIextended;
-    
+
     string public NETWORK_PROVENANCE = "";
     string public notRevealedUri = "ipfs://QmdSHzmB6EEBkuBzc84Gg5QaewjwZX1KkiTykN2HJBU6ZB";
 
@@ -134,15 +134,16 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     function withdrawTotal() external onlyOwner {
         uint balance = address(this).balance;
-        payable(address(0x6F14C20D16c4e1511471AC9A657Aab48Ea981727)).transfer(balance.mul(125).div(10000));
+        payable(address(0x3e89Fbf78021D067060CC91496E604EFb69cbb15)).transfer(balance.mul(125).div(10000));
         payable(address(0xebD47AaebdeEBE67DFB2092DB728e86cC62fFac6)).transfer(balance.mul(125).div(10000));
-        payable(address(0x345A8760D24CAd15E00387FCA6Da6Cbb85334482)).transfer(balance.mul(30).div(100));
-        payable(address(0xB6cD3e633b4D1072557c236767c38C26e09039b7)).transfer(balance.mul(10).div(100));
+        payable(address(0x345A8760D24CAd15E00387FCA6Da6Cbb85334482)).transfer(balance.mul(30).div(100)); // Mystery pearls
+        payable(address(0xB6cD3e633b4D1072557c236767c38C26e09039b7)).transfer(balance.mul(10).div(100)); // DAO
         payable(address(0x8102c63993151973c0F334CE3bFB3B48B611e1C1)).transfer(balance.mul(15).div(100));
+        payable(address(0xB6cD3e633b4D1072557c236767c38C26e09039b7)).transfer(balance.mul(10).div(100));
         payable(address(0x70148a9f077D4836d9a790ce1c1b637FAB2A9d8f)).transfer(balance.mul(15).div(100));
 
         balance = address(this).balance;
-        payable(address(0x7750681f5a8EB64b3581A4D71B0b134b95D5401c)).transfer(balance);  // 27.5, rest of balance
+        payable(address(0xF1e25b6935aC967dC62A39Af295c1E6d5F725940)).transfer(balance); // 27.5, rest of balance
     }
 
     function setProvenanceHash(string memory provenanceHash) external onlyOwner {
@@ -152,14 +153,14 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
     function setNotRevealedURI(string memory _notRevealedUri) external onlyOwner {
         notRevealedUri = _notRevealedUri;
     }
-    
+
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         require(_exists(_tokenId), "TLS URI For Token Non-existent");
         if(!revealed){
             return notRevealedUri;
         }
-        string memory currentBaseURI = _baseURI(); 
-        return bytes(currentBaseURI).length > 0 ? 
+        string memory currentBaseURI = _baseURI();
+        return bytes(currentBaseURI).length > 0 ?
         string(abi.encodePacked(currentBaseURI,_tokenId.toString(),".json")) : "";
     }
 }
