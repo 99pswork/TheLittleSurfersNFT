@@ -30,7 +30,7 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
     string private _baseURIextended;
     
-    string public NETWORK_PROVENANCE = "";
+    string public NETWORK_PROVENANCE = "4544338203310281430";
     string public notRevealedUri = "ipfs://QmdSHzmB6EEBkuBzc84Gg5QaewjwZX1KkiTykN2HJBU6ZB";
 
     mapping(address => bool) public isWhiteListed;
@@ -143,10 +143,6 @@ contract TheLittleSurfers is ERC721A, Ownable, ReentrancyGuard {
 
         balance = address(this).balance;
         payable(address(0x7750681f5a8EB64b3581A4D71B0b134b95D5401c)).transfer(balance);  // 27.5, rest of balance
-    }
-
-    function setProvenanceHash(string memory provenanceHash) external onlyOwner {
-        NETWORK_PROVENANCE = provenanceHash;
     }
 
     function setNotRevealedURI(string memory _notRevealedUri) external onlyOwner {
